@@ -51,6 +51,7 @@ import com.teragrep.pth_10.ast.commands.logicalstatement.LogicalStatementCatalys
 import com.teragrep.pth_10.steps.search.SearchStep;
 import com.teragrep.pth_03.antlr.DPLParser;
 import com.teragrep.pth_03.antlr.DPLParserBaseVisitor;
+import org.apache.spark.sql.functions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
