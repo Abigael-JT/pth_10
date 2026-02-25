@@ -81,6 +81,7 @@ public final class ConvertStep extends AbstractConvertStep {
         sparkSession = SparkSession.builder().getOrCreate();
         Dataset<Row> rv = dataset;
 
+        final List<String> fieldsToConvert = new ArrayList<>();
         // Process all of the convert commands
         for (ConvertCommand cmd : this.listOfCommands) {
             LOGGER
@@ -90,7 +91,19 @@ public final class ConvertStep extends AbstractConvertStep {
                     );
 
             // Get wildcarded fields
-            List<String> fields = getWildcardFields(cmd.getFieldParam(), rv.columns(), this.listOfFieldsToOmit);
+            final List<String> fields = getWildcardFields(cmd.getFieldParam(), rv.columns(), this.listOfFieldsToOmit);
+
+            fields.forEach(field -> {
+                if (fieldsToConvert.contains(field)) {
+                    throw new IllegalArgumentException(
+                            "Convert command allows converting a field with convert functions only once, the column < "
+                                    + field + "> was used more than once"
+                    );
+                }
+                else {
+                    fieldsToConvert.add(field);
+                }
+            });
 
             // Process each field with the given conversion function
             for (String field : fields) {
